@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  control:
+    build: .
+  command: python control_plane/control_plane.py
+    volumes:
+      - .:/app:cached
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  data:
+    build: .
+  command: python data_plane/data_plane.py
+    volumes:
+      - .:/app:cached
+    environment:
+      - PYTHONUNBUFFERED=1

@@ -1,0 +1,32 @@
+2026-06-18 16:36:43 ERROR [test_logger] Unhandled exception in TestLoggerDecorator.test_exception_handler_logs_and_reraises.<locals>.f: err
+Traceback (most recent call last):
+  File "/Users/dineshgupta/Stock_Aradhay/stocks/utility/logger.py", line 58, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dineshgupta/Stock_Aradhay/stocks/tests/test_logger.py", line 9, in f
+    raise RuntimeError("err")
+RuntimeError: err
+2026-06-18 16:37:01 ERROR [test_logger] Unhandled exception in TestLoggerDecorator.test_exception_handler_logs_and_reraises.<locals>.f: err
+Traceback (most recent call last):
+  File "/Users/dineshgupta/Stock_Aradhay/stocks/utility/logger.py", line 58, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dineshgupta/Stock_Aradhay/stocks/tests/test_logger.py", line 9, in f
+    raise RuntimeError("err")
+RuntimeError: err
+2026-06-18 16:37:15 ERROR [test_logger] Unhandled exception in TestLoggerDecorator.test_exception_handler_logs_and_reraises.<locals>.f: err
+Traceback (most recent call last):
+  File "/Users/dineshgupta/Stock_Aradhay/stocks/utility/logger.py", line 58, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dineshgupta/Stock_Aradhay/stocks/tests/test_logger.py", line 9, in f
+    raise RuntimeError("err")
+RuntimeError: err
+2026-06-18 16:37:37 ERROR [test_logger] Unhandled exception in TestLoggerDecorator.test_exception_handler_logs_and_reraises.<locals>.f: err
+Traceback (most recent call last):
+  File "/Users/dineshgupta/Stock_Aradhay/stocks/utility/logger.py", line 58, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dineshgupta/Stock_Aradhay/stocks/tests/test_logger.py", line 9, in f
+    raise RuntimeError("err")
+RuntimeError: err
