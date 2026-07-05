@@ -1,17 +1,53 @@
 version: '3.8'
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: stocks
+      POSTGRES_USER: stocks
+      POSTGRES_PASSWORD: stocks
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U stocks"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    build: .
+    command: python db/migrate.py
+    environment:
+      DATABASE_URL: postgres://stocks:stocks@db:5432/stocks
+    depends_on:
+      db:
+        condition: service_healthy
+
   control:
     build: .
-  command: python control_plane/control_plane.py
+    command: python control_plane/control_plane.py
     volumes:
       - .:/app:cached
     environment:
-      - PYTHONUNBUFFERED=1
+      PYTHONUNBUFFERED: "1"
+      DATABASE_URL: postgres://stocks:stocks@db:5432/stocks
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
 
   data:
     build: .
-  command: python data_plane/data_plane.py
+    command: python data_plane/data_plane.py
     volumes:
       - .:/app:cached
     environment:
-      - PYTHONUNBUFFERED=1
+      PYTHONUNBUFFERED: "1"
+      DATABASE_URL: postgres://stocks:stocks@db:5432/stocks
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  pgdata:

@@ -23,17 +23,19 @@ def main():
             print(f"{t}: error: {e}")
             continue
 
-        out = {
-            "symbol": f.symbol,
-            "pe_ratio": f.pe_ratio,
-            "eps": f.eps,
-            "52_week_high": f.week52_high,
-            "52_week_low": f.week52_low,
-            "market_cap": f.market_cap,
-        }
-        print(json.dumps(out))
+        print(f"\n{'='*50}")
+        print(f"{f.name} ({f.symbol})  —  {f.exchange}")
+        print(f"Sector:   {f.sector}")
+        print(f"Industry: {f.industry}")
+        print(f"Address:  {f.address}")
+        print(f"\n{f.description}")
+        print(f"\nPE Ratio:    {f.pe_ratio}")
+        print(f"EPS:         {f.eps}")
+        print(f"52W High:    {f.week52_high}")
+        print(f"52W Low:     {f.week52_low}")
+        print(f"Market Cap:  {f.market_cap:,}" if f.market_cap else "Market Cap:  N/A")
         if args.raw:
-            print(json.dumps(f.raw))
+            print(json.dumps(f.raw, indent=2))
 
 
 if __name__ == "__main__":

@@ -76,6 +76,52 @@ def pretty_print_range(resp, ticker="SPCX"):
         print(f"[{i+1}/{len(results)}] Time: {ts} Open: {bar.get('o')} High: {bar.get('h')} Low: {bar.get('l')} Close: {bar.get('c')} VWAP: {bar.get('vw')} Volume: {bar.get('v')} N: {bar.get('n')}")
 
 
+def _persist_price(ticker: str, resp: dict):
+    results = resp.get("results") or []
+    if not results:
+        return
+    bar = results[0]
+    price = bar.get("c")
+    if price is None:
+        return
+    try:
+        from datetime import datetime, timezone
+        from db.connection import get_conn
+        bar_ts = None
+        if bar.get("t"):
+            bar_ts = datetime.fromtimestamp(bar["t"] / 1000, tz=timezone.utc)
+        conn = get_conn()
+        try:
+            with conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        INSERT INTO prices_cache
+                            (ticker, price, open, high, low, vwap, volume, bar_ts, ts)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, now())
+                        ON CONFLICT (ticker) DO UPDATE SET
+                            price  = EXCLUDED.price,
+                            open   = EXCLUDED.open,
+                            high   = EXCLUDED.high,
+                            low    = EXCLUDED.low,
+                            vwap   = EXCLUDED.vwap,
+                            volume = EXCLUDED.volume,
+                            bar_ts = EXCLUDED.bar_ts,
+                            ts     = now()
+                        """,
+                        (
+                            ticker.upper(), price,
+                            bar.get("o"), bar.get("h"), bar.get("l"),
+                            bar.get("vw"), bar.get("v") and int(bar["v"]),
+                            bar_ts,
+                        ),
+                    )
+        finally:
+            conn.close()
+    except Exception as e:
+        print(f"Warning: could not save price to DB: {e}")
+
+
 def main():
     import argparse
 
@@ -101,6 +147,7 @@ def main():
     for ticker in tickers:
         try:
             resp = get_quote_stdlib(ticker, range_from=args.range_from, range_to=args.range_to)
+            _persist_price(ticker, resp)
             if args.raw:
                 print(f"== {ticker} ==")
                 print(json.dumps(resp, indent=2))
