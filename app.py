@@ -1,6 +1,7 @@
 # streamlit app - search a ticker, shows price, chart, fundamentals and news
 import pandas as pd
 import streamlit as st
+import plotly.graph_objects as go
 from dotenv import load_dotenv
 import requests
 import os
@@ -14,6 +15,20 @@ from clients.alpha_vantage_client import get_fundamentals, get_news
 st.set_page_config(page_title="Stock Trader", layout="wide")
 st.title("Stock Trader")
 
+
+def refresh_history_for_range():
+    ticker = st.session_state.get("ticker")
+    if not ticker:
+        return
+    try:
+        st.session_state.history = get_price_history(
+            ticker, days=st.session_state.days
+        )
+        st.session_state.error = None
+    except Exception as e:
+        st.session_state.error = str(e)
+
+
 col_input, col_days, col_btn = st.columns([4, 2, 1])
 with col_input:
     ticker_input = st.text_input(
@@ -23,7 +38,10 @@ with col_input:
 with col_days:
     days = st.selectbox(
         "Days", [30, 90, 180, 365], index=1,
-        format_func=lambda d: f"Last {d} days", label_visibility="collapsed"
+        format_func=lambda d: f"Last {d} days",
+        label_visibility="collapsed",
+        key="days",
+        on_change=refresh_history_for_range,
     )
 with col_btn:
     fetch_btn = st.button("Fetch", use_container_width=True)
@@ -126,10 +144,57 @@ elif "quote" in st.session_state:
     if hist_results:
         df = pd.DataFrame(hist_results)
         df["date"] = pd.to_datetime(df["t"], unit="ms")
-        df = df.set_index("date")[["c"]].rename(columns={"c": "Close"})
+        for column in ("o", "h", "l", "c", "v"):
+            df[column] = pd.to_numeric(df[column], errors="coerce")
+        df = df.dropna(subset=["o", "h", "l", "c"])
         st.divider()
         st.subheader(f"Price History — Last {days} Days")
-        st.line_chart(df)
+        chart_view = st.radio(
+            "Chart view",
+            ["Line", "Candlestick"],
+            horizontal=True,
+            label_visibility="collapsed",
+            key="chart_view_2d",
+        )
+
+        if chart_view == "Line":
+            figure = go.Figure(
+                go.Scatter(
+                    x=df["date"],
+                    y=df["c"],
+                    mode="lines",
+                    line=dict(color="#287a68", width=2),
+                    name=f"{ticker} Close",
+                    hovertemplate="%{x|%b %d, %Y}<br>Close: $%{y:.2f}<extra></extra>",
+                )
+            )
+            figure.update_layout(
+                height=420,
+                margin=dict(l=10, r=10, t=20, b=10),
+                xaxis_title="Date",
+                yaxis_title="Price (USD)",
+                xaxis_rangeslider_visible=True,
+            )
+        else:
+            figure = go.Figure(
+                go.Candlestick(
+                    x=df["date"],
+                    open=df["o"],
+                    high=df["h"],
+                    low=df["l"],
+                    close=df["c"],
+                    name=ticker,
+                )
+            )
+            figure.update_layout(
+                height=480,
+                margin=dict(l=10, r=10, t=20, b=10),
+                xaxis_title="Date",
+                yaxis_title="Price (USD)",
+                xaxis_rangeslider_visible=True,
+            )
+        figure.update_layout(dragmode="pan")
+        st.plotly_chart(figure, use_container_width=True)
 
     st.divider()
     c1, c2, c3, c4 = st.columns(4)
