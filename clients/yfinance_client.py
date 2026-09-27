@@ -1,9 +1,4 @@
-"""Yahoo Finance fallback client (unofficial, via yfinance).
-
-Used only when Alpha Vantage's rate limit is hit. yfinance scrapes Yahoo's
-internal endpoints rather than a published API, so it's less reliable
-long-term — keep Alpha Vantage as the primary source.
-"""
+# yfinance backup for fundamentals when alpha vantage hits its limit
 from clients.alpha_vantage_client import Fundamentals
 
 

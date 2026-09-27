@@ -1,3 +1,4 @@
+# tests for utility/errors
 import unittest
 from utility import errors
 

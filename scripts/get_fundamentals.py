@@ -1,8 +1,4 @@
-"""CLI to fetch fundamentals via Alpha Vantage.
-
-Usage:
-  python3 scripts/get_fundamentals.py AAPL --key YOURKEY
-"""
+# cli for fundamentals. python3 scripts/get_fundamentals.py AAPL
 import argparse
 import os
 import json

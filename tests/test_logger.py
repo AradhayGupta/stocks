@@ -1,3 +1,4 @@
+# tests for the logger exception decorator
 import unittest
 from utility import logger
 

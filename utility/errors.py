@@ -1,15 +1,8 @@
-"""Custom exceptions and helpers for the project."""
+# custom error classes + decorator to wrap exceptions
 from typing import Optional
 
 
 class BaseAppError(Exception):
-    """Base class for application errors.
-
-    Attributes:
-        msg: human readable message
-        code: optional machine-readable error code
-    """
-
     def __init__(self, msg: str, code: Optional[str] = None):
         super().__init__(msg)
         self.msg = msg
@@ -20,19 +13,18 @@ class BaseAppError(Exception):
 
 
 class ValidationError(BaseAppError):
-    """Raised when input validation fails."""
+    pass
 
 
 class NotFoundError(BaseAppError):
-    """Raised when an expected resource is not found."""
+    pass
 
 
 class ExternalServiceError(BaseAppError):
-    """Raised when an external service fails or returns an error."""
+    pass
 
 
 def wrap_exceptions(func):
-    """Decorator that converts exceptions to BaseAppError, preserving context."""
     from functools import wraps
 
     @wraps(func)

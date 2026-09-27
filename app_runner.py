@@ -1,7 +1,4 @@
-"""Small runner used as Docker container CMD.
-
-Set SERVICE=control or SERVICE=data to run the desired component. Defaults to control.
-"""
+# picks control or data service based on SERVICE env var, used by docker
 import os
 import sys
 

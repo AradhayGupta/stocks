@@ -1,8 +1,4 @@
-"""Example data plane module demonstrating logger and error utilities.
-
-This file shows how data-plane code can use the shared utilities.
-"""
-
+# placeholder data fetch, just returns dummy data for now
 from utility import logger, errors
 
 log = logger.get_logger(__name__)
@@ -12,7 +8,6 @@ log = logger.get_logger(__name__)
 def fetch_data(source: dict):
     if not source or "url" not in source:
         raise errors.ValidationError("source must contain 'url'")
-    # simulate fetching; in real code you'd use requests or aiohttp
     if source.get("bad"):
         raise ConnectionError("failed to connect to source")
     return {"data": [1, 2, 3], "source": source.get("url")}

@@ -1,3 +1,4 @@
+# streamlit app - search a ticker, shows price, chart, fundamentals and news
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
@@ -13,7 +14,6 @@ from clients.alpha_vantage_client import get_fundamentals, get_news
 st.set_page_config(page_title="Stock Trader", layout="wide")
 st.title("Stock Trader")
 
-# ── Search bar ────────────────────────────────────────────────────────────────
 col_input, col_days, col_btn = st.columns([4, 2, 1])
 with col_input:
     ticker_input = st.text_input(
@@ -29,7 +29,6 @@ with col_btn:
     fetch_btn = st.button("Fetch", use_container_width=True)
 
 
-# ── News helper ───────────────────────────────────────────────────────────────
 def get_top_news():
     api_key = os.getenv("POLYGON_API_KEY", "")
     try:
@@ -43,7 +42,6 @@ def get_top_news():
         return []
 
 
-# ── Sidebar: load news once, cache it ────────────────────────────────────────
 if "top_news" not in st.session_state:
     st.session_state.top_news = get_top_news()
 
@@ -85,9 +83,7 @@ with st.sidebar:
         st.caption("No headlines available right now.")
 
 
-# ── Fetch stock data ──────────────────────────────────────────────────────────
 if fetch_btn and ticker_input:
-    #convert ticker to uppercase
     ticker = ticker_input.strip().upper()
     st.session_state.ticker = ticker
     st.session_state.show_all_news = False
@@ -102,11 +98,9 @@ if fetch_btn and ticker_input:
         except Exception as e:
             st.session_state.error = str(e)
 
-# ── Error state ───────────────────────────────────────────────────────────────
 if st.session_state.get("error"):
     st.error(f"Error: {st.session_state.error}")
 
-# ── Display results ───────────────────────────────────────────────────────────
 elif "quote" in st.session_state:
     ticker     = st.session_state.ticker
     quote      = st.session_state.quote
@@ -116,7 +110,6 @@ elif "quote" in st.session_state:
     st.subheader(f"{f.name}  ({ticker})  —  {f.exchange}")
     st.caption(f"{f.sector}  |  {f.industry}  |  {f.address}")
 
-    # Price metrics
     results = quote.get("results", [])
     if results:
         bar = results[0]
@@ -128,7 +121,6 @@ elif "quote" in st.session_state:
         c4.metric("Low",    f"${bar.get('l', 0):,.2f}")
         c5.metric("Volume", f"{int(bar.get('v', 0)):,}")
 
-    # Price history chart
     history = st.session_state.get("history", {})
     hist_results = history.get("results", [])
     if hist_results:
@@ -139,7 +131,6 @@ elif "quote" in st.session_state:
         st.subheader(f"Price History — Last {days} Days")
         st.line_chart(df)
 
-    # Fundamentals
     st.divider()
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("PE Ratio", f.pe_ratio   if f.pe_ratio   else "N/A")
@@ -153,7 +144,6 @@ elif "quote" in st.session_state:
         st.markdown("**Company Description**")
         st.write(f.description)
 
-    # Ticker news sorted by sentiment
     st.divider()
     st.subheader("Recent News")
 

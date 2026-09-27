@@ -1,10 +1,4 @@
-"""Run schema.sql against the configured Postgres database.
-
-Usage:
-    python db/migrate.py
-
-Reads DATABASE_URL from environment (or .env file).
-"""
+# runs schema.sql on the db. python db/migrate.py
 import os
 import pathlib
 

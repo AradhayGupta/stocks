@@ -1,4 +1,4 @@
-"""Shared Postgres connection helper."""
+# postgres connection from DATABASE_URL
 import os
 import psycopg2
 from dotenv import load_dotenv

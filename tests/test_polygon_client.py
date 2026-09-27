@@ -1,3 +1,4 @@
+# tests polygon get_quote with requests mocked
 import unittest
 from unittest.mock import patch, Mock
 
@@ -6,9 +7,7 @@ class TestPolygonClient(unittest.TestCase):
     def test_get_quote_calls_api(self):
         import os, sys, types
         os.environ.setdefault("POLYGON_API_KEY", "fake")
-        # provide a fake requests module for environments without requests installed
         fake_requests = types.ModuleType("requests")
-        # ensure a stub 'get' exists so patch.object can find it
         from unittest.mock import Mock as _M
         fake_requests.get = _M()
         sys.modules["requests"] = fake_requests
