@@ -1,4 +1,4 @@
-"""Alpha Vantage client for fetching company overview/fundamentals and news."""
+# alpha vantage fundamentals + news, cached in postgres. falls back to yfinance if rate limited
 from dataclasses import dataclass
 from typing import Optional, Any, Dict, List
 import os
@@ -33,8 +33,6 @@ def _get_api_key() -> str:
 
 
 def _check_rate_limit(data: dict):
-    """Alpha Vantage returns 200 OK with a 'Note'/'Information' field instead
-    of real data when you're rate limited, rather than an HTTP error."""
     msg = data.get("Note") or data.get("Information")
     if msg:
         raise RuntimeError(f"Alpha Vantage API limit hit: {msg}")
@@ -159,13 +157,6 @@ def get_fundamentals(
     ticker: str, api_key: Optional[str] = None,
     max_age_days: int = 90, force_refresh: bool = False,
 ) -> Fundamentals:
-    """Fetches company fundamentals and returns a Fundamentals object.
-
-    Fundamentals rarely change, so this reads from fundamentals_cache first and only
-    calls an API if there's no row younger than max_age_days (or force_refresh=True).
-    Tries Alpha Vantage first; if its rate limit is hit, falls back to yfinance
-    (unofficial Yahoo Finance) so a daily-limit hit doesn't block the app.
-    """
     ticker = ticker.upper()
 
     if not force_refresh:
@@ -237,8 +228,6 @@ def get_news(
     ticker: str, api_key: Optional[str] = None, limit: int = 10,
     max_age_hours: int = 6, force_refresh: bool = False,
 ) -> List[Dict[str, Any]]:
-    """Fetch news sentiment for a ticker. Reads from news_cache first if a fetch
-    happened within max_age_hours; otherwise calls Alpha Vantage and persists."""
     ticker = ticker.upper()
 
     if not force_refresh:

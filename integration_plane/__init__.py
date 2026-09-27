@@ -1,3 +1,2 @@
-"""integration_plane package (renamed from integration-plane)."""
-
+# integration plane (nothing here yet)
 __all__ = []

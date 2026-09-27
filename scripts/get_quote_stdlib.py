@@ -1,8 +1,4 @@
-"""Fetch AAPL quote using only Python standard library.
-
-Reads POLYGON_API_KEY from .env in repo root or from environment.
-This avoids external dependencies (requests, python-dotenv).
-"""
+# polygon quote using only stdlib, no requests/dotenv needed
 import os
 import json
 import sys
@@ -28,7 +24,6 @@ def get_quote_stdlib(ticker="SPCX", range_from: str = None, range_to: str = None
     if not api_key:
         raise RuntimeError("POLYGON_API_KEY not set in environment or .env")
     if range_from and range_to:
-        # Use range endpoint: multiplier=1, timespan=day
         url = (
             f"https://api.polygon.io/v2/aggs/ticker/{ticker}/range/1/day/{range_from}/{range_to}?apiKey={api_key}"
         )
@@ -137,7 +132,6 @@ def main():
     if args.key:
         os.environ["POLYGON_API_KEY"] = args.key
 
-    # Resolve list of tickers to query
     if args.tickers and len(args.tickers) > 0:
         tickers = args.tickers
     else:

@@ -1,4 +1,4 @@
-"""Polygon.io client moved to top-level clients package."""
+# polygon quotes and price history, saves latest quote to prices_cache
 import os
 import requests
 from typing import Dict, Any
@@ -65,8 +65,6 @@ def get_quote(ticker: str) -> Dict[str, Any]:
 
 
 def get_price_history(ticker: str, days: int = 90) -> Dict[str, Any]:
-    """Fetch daily OHLCV bars for the last `days` days (for charting). Not cached —
-    history doesn't fit the one-row-per-ticker prices_cache model."""
     from datetime import date, timedelta
 
     api_key = _get_api_key()

@@ -1,3 +1,2 @@
-"""Clients package for external service integrations."""
-
+# api clients
 __all__ = ["polygon_client"]

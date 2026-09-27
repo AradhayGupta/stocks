@@ -1,9 +1,4 @@
-"""Example control plane module demonstrating logger and error utilities.
-
-This file is intentionally lightweight and meant to demonstrate usage. Replace
-with your real control-plane logic as needed.
-"""
-
+# basic control plane, validates config and logs the run
 from utility import logger, errors
 
 
@@ -19,19 +14,16 @@ def validate_config(cfg: dict):
 
 @logger.exception_handler(convert_exceptions=False)
 def run_control(cfg: dict):
-    """Run a simple control flow that validates and logs output."""
     log.info("Starting control plane run")
     validate_config(cfg)
     name = cfg.get("name")
     log.info("Control plane running for %s", name)
-    # simulate a step that could fail
     if cfg.get("fail_step"):
         raise RuntimeError("simulated failure in control step")
     log.info("Control plane completed successfully")
 
 
 if __name__ == "__main__":
-    # quick smoke test
     try:
         run_control({"name": "example", "fail_step": False})
     except Exception as e:

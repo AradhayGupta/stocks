@@ -1,9 +1,4 @@
-"""CLI to fetch news sentiment via Alpha Vantage.
-
-Usage:
-  python3 -m scripts.get_news AAPL
-  python3 -m scripts.get_news AMD NVDA --limit 5
-"""
+# cli for news + sentiment. python3 -m scripts.get_news AAPL --limit 5
 import argparse
 from clients.alpha_vantage_client import get_news
 
