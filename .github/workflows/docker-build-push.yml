@@ -37,11 +37,11 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:latest
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:cache
-          cache-to: type=registry,mode=max,ref=ghcr.io/${{ github.repository }}:cache
+            ghcr.io/aradhaygupta/stocks:latest
+            ghcr.io/aradhaygupta/stocks:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/aradhaygupta/stocks:cache
+          cache-to: type=registry,mode=max,ref=ghcr.io/aradhaygupta/stocks:cache
 
       - name: Output image info
         run: |
-          echo "Image pushed: ghcr.io/${{ github.repository }}:latest"
+          echo "Image pushed: ghcr.io/aradhaygupta/stocks:latest"
