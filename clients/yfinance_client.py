@@ -1,4 +1,4 @@
-# yfinance backup for fundamentals when alpha vantage hits its limit
+# yfinance fundamentals, main source before falling back to alpha vantage
 from clients.alpha_vantage_client import Fundamentals
 
 
