@@ -1,5 +1,17 @@
-Build image:
-docker build -t stocks-app .
-Run control service:
-docker run --rm -e SERVICE=control stocks-app
+Run everything locally (site on http://localhost:8501):
+docker compose up --build
 
+Run just the site without docker (db still in docker):
+docker compose up -d db migrate
+streamlit run app.py
+
+Run control service:
+docker build -t stocks-app .
+docker run --rm -e SERVICE=control stocks-app python app_runner.py
+
+Deploy to google cloud run:
+gcloud auth login
+gcloud config set project YOUR_PROJECT_ID
+DATABASE_URL="your cloud postgres url" python3 db/migrate.py
+gcloud run deploy stocks --source . --region us-central1 --allow-unauthenticated \
+  --set-env-vars POLYGON_API_KEY=...,ALPHA_VANTAGE_KEY=...,DATABASE_URL=...
