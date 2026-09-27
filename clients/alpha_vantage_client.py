@@ -1,4 +1,4 @@
-# alpha vantage fundamentals + news, cached in postgres. falls back to yfinance if rate limited
+# fundamentals (yfinance first, alpha vantage as backup) + alpha vantage news, cached in postgres
 from dataclasses import dataclass
 from typing import Optional, Any, Dict, List
 import os
@@ -165,12 +165,10 @@ def get_fundamentals(
             return cached
 
     try:
-        result = _fetch_fundamentals_alpha_vantage(ticker, api_key)
-    except RuntimeError as e:
-        if "API limit hit" not in str(e):
-            raise
         from clients import yfinance_client
         result = yfinance_client.get_fundamentals(ticker)
+    except Exception:
+        result = _fetch_fundamentals_alpha_vantage(ticker, api_key)
 
     _save_fundamentals_cache(ticker, result)
     return result

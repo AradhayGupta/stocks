@@ -1,4 +1,4 @@
-# python image with requirements, runs as non-root user
+# python image with requirements, runs the streamlit site as non-root user
 FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -29,4 +29,4 @@ USER app
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
 	CMD ["python", "/app/healthcheck.py"]
 
-CMD ["python", "app_runner.py"]
+CMD streamlit run app.py --server.port=${PORT:-8080} --server.address=0.0.0.0 --server.headless=true
